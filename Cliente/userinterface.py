@@ -23,15 +23,18 @@ while operation != 0:
         date = input("data: ")
         auth = input("autor: ")
         price = float(input("preco: "))
-        condition = int(input("condicao (0-5): "))
+        condition = int(input("condicao (0-3): "))
 
-        print(proxy.giveComic(name,date,auth,price,condition))
+        proxy.giveComic(name,date,auth,price,condition).display()
 
     if operation == 2:
         id = int(input("Qual o id da comic?"))
 
-        print(proxy.takeComic(id))
+        proxy.takeComic(id).display()
 
 
     if operation == 3:
-        print(proxy.getComics())
+        for index,c in enumerate(proxy.getComics()):
+            print(f"id: {index}")
+            c.display()
+            print()

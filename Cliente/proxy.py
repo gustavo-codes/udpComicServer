@@ -1,6 +1,50 @@
 import messages_pb2 as Message
 from udpclient import *
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+class Comic:
+    def __init__(self,name:str,date:str,auth:str,price:float,condition:int,status:int=1):
+        self.name = name
+        self.date = date
+        self.auth = auth
+        self.price = price
+        self.condition = condition
+        self.status = status
+    def texCondiction(self):
+        if self.condition == 3:
+            return f"{bcolors.OKBLUE}lacrado{bcolors.ENDC}"
+        if self.condition == 2:
+            return f"{bcolors.OKCYAN}novo{bcolors.ENDC}"
+        if self.condition == 1:
+            return f"{bcolors.WARNING}pouco danificado{bcolors.ENDC}"
+        if self.condition == 0:
+            return f"{bcolors.FAIL}danificado{bcolors.ENDC}"
+    def textStatus(self):
+        if self.status == 1:
+            return f"{bcolors.OKGREEN}Disponível{bcolors.ENDC}"
+        else:
+            return f"{bcolors.FAIL}Não disponível{bcolors.ENDC}"
+            
+    def display(self):
+        print(f"{bcolors.BOLD}{self.name}{bcolors.ENDC} - by {self.auth} - {self.texCondiction()}")
+        print(f"{bcolors.HEADER}{self.date}{bcolors.ENDC}")
+        print(f"Price: {bcolors.OKGREEN}${self.price}{bcolors.ENDC}")
+        print(self.textStatus())
+
+def comicFromMessage(msg):
+        comic = Comic(msg.name,msg.date,msg.auth,msg.price,msg.condition,msg.status)
+        return comic
+
 class Proxy():
     udpclient = UDPClient()
 
@@ -22,7 +66,8 @@ class Proxy():
         response = self.doOperation('locadora','takeComic',op.SerializeToString())
         comic.ParseFromString(response)
 
-        return comic
+
+        return comicFromMessage(comic)
 
 
     def giveComic(self,name,date,auth,price,condition):
@@ -41,7 +86,7 @@ class Proxy():
 
         comic.ParseFromString(response)
 
-        return comic
+        return comicFromMessage(comic)
     
     def getComics(self):
         #Empacota os argumentos
@@ -53,7 +98,11 @@ class Proxy():
         response = self.doOperation('locadora','getComics',op.SerializeToString())
         comics.ParseFromString(response)
 
-        return comics
+        comicList = []
+        for c in comics.comics:
+            comicList.append(comicFromMessage(c))
+
+        return comicList
     
 
     """
