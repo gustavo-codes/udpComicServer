@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package proto;
+
+message Message {
+    int32 type = 1;
+    int32 id = 2;
+    string obfReference = 3;
+    string methodId = 4;
+    bytes arguments = 5;
+}
+
+message Comic{
+    string name = 1;
+    string date = 2;
+    string auth = 3;
+    float price = 4;
+    int32 condition = 5;
+    int32 status = 6;
+}
+
+message ComicId{
+    int32 id = 1;
+}
+
+message ComicList{
+    repeated Comic comics = 1;
+    int32 filter = 2;
+}
