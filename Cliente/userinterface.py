@@ -70,4 +70,4 @@ while operation != 0:
         for index, c in enumerate(proxy.getComics()):
             print(f"id: {index}")
             c.display()
-            print()
+            print() 

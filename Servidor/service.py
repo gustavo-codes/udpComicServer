@@ -22,14 +22,20 @@ class Locadora:
         self.giveComic(Comic("Green Lantern", '03/05/1999', 'DC Comics', 24, 2))
         self.giveComic(Comic("Thor", '18/09/1994', 'Marvel Comics', 27, 0))
         self.giveComic(Comic("Hulk", '22/10/1987', 'Marvel Comics', 26, 1))
+    
     def giveComic(self,comic:Comic):
         self.comics.append(comic)
-    def takeComic(self,id:int):
-        if self.comics[id].status == 1:
-            self.comics[id].status = 2
-            return self.comics[id]
-        else:
-            raise Exception('comic já reservada')
+
+    def takeComic(self,id):
+        if type(id) != type(1):
+            raise Exception('id not int')
+        if self.comics[id].status == 2:
+            raise Exception('comic already reserved')
+        if id not in range(len(self.comics)):
+            raise Exception('comic not found')
+                    
+        self.comics[id].status = 2
+        return self.comics[id]
 
     def getComics(self):
         return self.comics

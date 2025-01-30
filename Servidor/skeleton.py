@@ -5,26 +5,31 @@ class Skeleton:
         self.locadora = Locadora()
 
     def giveComic(self,args):
-        comic = Message.Comic()
+        try:
+            comic = Message.Comic()
 
-        #Desempacota os argumentos recebidos
-        comic.ParseFromString(args)
+            #Desempacota os argumentos recebidos
+            comic.ParseFromString(args)
 
-        #Chama o serviço
-        self.locadora.giveComic(Comic(comic.name,comic.date,comic.auth,comic.price,comic.condition))
-
+            #Chama o serviço
+            self.locadora.giveComic(Comic(comic.name,comic.date,comic.auth,comic.price,comic.condition))
+        except Exception as exc:
+            raise exc
         #Nesse caso o retorno são os prórpios argumentos recebido (echo)
         return args
     
     def takeComic(self,args):
-        comic = Message.Comic()
-        comicId = Message.ComicId()
+        try:
+            comic = Message.Comic()
+            comicId = Message.ComicId()
 
-        #Desempacota o argumento recebido
-        comicId.ParseFromString(args)
-        
-        #Chama o serviço
-        c:Comic = self.locadora.takeComic(comicId.id)
+            #Desempacota o argumento recebido
+            comicId.ParseFromString(args)
+            
+            #Chama o serviço
+            c:Comic = self.locadora.takeComic(comicId.id)
+        except Exception as exc:
+            raise exc
         #Empacota os argumentos de resposta
         comic.name = c.name
         comic.date = c.date
@@ -35,14 +40,16 @@ class Skeleton:
         return comic.SerializeToString()
     
     def getComics(self,args):
-        comics = Message.ComicList()
+        try:
+            comics = Message.ComicList()
 
-        #Desempacota o argumento recebido
-        comics.ParseFromString(args)
+            #Desempacota o argumento recebido
+            comics.ParseFromString(args)
 
-        #Chama o serviço
-        comicList = self.locadora.getComics()
-        
+            #Chama o serviço
+            comicList = self.locadora.getComics()
+        except Exception as exc:
+            raise exc
         #Empacota os argumentos de resposta
         for c in comicList:
             comic = Message.Comic()

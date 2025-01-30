@@ -15,6 +15,11 @@ class UDPServer:
             print('Connected to: ')
             print(addr)
             
+            """
+            Tratatamento de falha
+
+            """
+
 
             self.sendResponse(self.getRequest(data),addr)
 

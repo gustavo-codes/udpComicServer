@@ -66,7 +66,6 @@ class Proxy():
         response = self.doOperation('locadora','takeComic',op.SerializeToString())
         comic.ParseFromString(response)
 
-
         return comicFromMessage(comic)
 
 
@@ -125,7 +124,7 @@ class Proxy():
     def packMessage(self,objectRef,method,args):
         message = Message.Message()
         message.type = 1
-        message.id = 0
+        message.id = 1
         message.obfReference = objectRef
         message.methodId = method
         message.arguments = args

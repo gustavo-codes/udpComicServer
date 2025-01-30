@@ -3,8 +3,8 @@ syntax = "proto3";
 package proto;
 
 message Message {
-    int32 type = 1;
-    int32 id = 2;
+    int32 type = 1; //1 req 2 res 3 err
+    int32 id = 2; 
     string obfReference = 3;
     string methodId = 4;
     bytes arguments = 5;
@@ -26,4 +26,8 @@ message ComicId{
 message ComicList{
     repeated Comic comics = 1;
     int32 filter = 2;
+}
+
+message Error{
+    string err = 1;
 }
