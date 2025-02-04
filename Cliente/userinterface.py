@@ -4,11 +4,11 @@ from datetime import datetime
 proxy = Proxy()
 
 def displayMenu():
+    print("0 -- Sair")
     print("1 -- Entregar uma comic")
     print("2 -- Pegar uma comic")
     print("3 -- Ver todas as comics")
-    print("0 -- Sair")
-
+  
 operation = -1
 
 while operation != 0:
@@ -45,7 +45,7 @@ while operation != 0:
             if not price_string.replace(".", "", 1).isdigit():
                 raise ValueError("O preço deve ser um valor numérico.")
             
-            price = float(input("Preço: "))
+            price = float(price_string)
             if price < 0:
                 raise ValueError("O preço não pode ser negativo.")
 
