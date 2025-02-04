@@ -1,6 +1,8 @@
 from socket import *
 from despat import Despat
 
+#Fazer aqui o tratamento de mensagem duplicada
+
 class UDPServer:
     def __init__(self,ip,port):
         self.despat = Despat()

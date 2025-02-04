@@ -70,6 +70,7 @@ class Proxy():
 
 
     def giveComic(self,name,date,auth,price,condition):
+        #Passar o objeto aqui e não os parâmetros
         #Empacota os argumentos
         comic = Message.Comic()
         op = Message.Comic()
@@ -119,6 +120,8 @@ class Proxy():
         self.udpclient.sendRequest(data)
         response = self.unpackMessage(self.udpclient.getResponse())
         return response.arguments
+
+        #Fazer tratamento de falhas aqui
 
     #Empacota a mensagem com os dados passados (1), (2) e (3)
     def packMessage(self,objectRef,method,args):
