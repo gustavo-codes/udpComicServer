@@ -1,5 +1,6 @@
 from socket import *
 from despat import Despat
+import random
 
 #Fazer aqui o tratamento de mensagem duplicada
 
@@ -21,9 +22,9 @@ class UDPServer:
             Tratatamento de falha
 
             """
-
-
-            self.sendResponse(self.getRequest(data),addr)
+            if random.randint(0, 2) > 0: #Simula pacotes perdidos
+                self.sendResponse(self.getRequest(data),addr)
+            
 
             
 
@@ -31,5 +32,4 @@ class UDPServer:
         return self.despat.invoke(req)
     def sendResponse(self,res,addr):
         self.Socket.sendto(res,addr)
-
 server = UDPServer('127.0.0.1',50007)

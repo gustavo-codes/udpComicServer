@@ -53,8 +53,16 @@ while operation != 0:
             if condition not in range(0, 4):
                 raise ValueError("A condição deve estar entre 0 e 3.")
 
-            # Se todas as validações passaram, executa a ação
-            proxy.giveComic(name, date, auth, price, condition).display()
+            # Se todas as validações passaram, executa a 
+
+        
+            comic:Comic = Comic(name, date, auth, price, condition)
+            returnedComic = proxy.giveComic(comic)
+
+            if returnedComic == "Timeout": 
+                print("Não foi possível falar com o servidor!")
+            else:
+                returnedComic.display()
 
         except ValueError as e:
             print(f"Erro: {e}")
@@ -62,12 +70,24 @@ while operation != 0:
     elif operation == 2:
         try:
             id = int(input("Qual o id da comic? "))
-            proxy.takeComic(id).display()
+            comic = proxy.takeComic(id)
+
+            if comic == "Timeout":
+                print("Não foi possível falar com o servidor!")
+            else:
+                comic.display()
+
         except ValueError:
             print("Erro: O ID deve ser um número inteiro válido.")
 
     elif operation == 3:
-        for index, c in enumerate(proxy.getComics()):
-            print(f"id: {index}")
-            c.display()
-            print() 
+        comics = proxy.getComics()
+
+        if comics == "Timeout":
+            print("Não foi possível falar com o servidor!")
+            
+        else:
+            for index, c in enumerate(comics):
+                print(f"id: {index}")
+                c.display()
+                print() 

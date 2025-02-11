@@ -46,7 +46,7 @@ def comicFromMessage(msg):
         return comic
 
 class Proxy():
-    udpclient = UDPClient()
+    udpclient = UDPClient(2)
 
     """
     Os métodos abaixo chamam remotamente os métodos com o mesmo nome no lado do servidor
@@ -55,6 +55,9 @@ class Proxy():
     (1) Empacota os argumentos
     (2) Chama o doOperation() passando os argumentos empacotados
     (3) Desempacota os argumentos da resposta e retorna-os
+
+    Todos os métodos têm uma verificação de se o doOperation retornou timeout, se ele tiver
+    retornado timeout, manda para a interface do usuário
     """
     def takeComic(self,id):
         #Empacota os argumentos
@@ -64,25 +67,33 @@ class Proxy():
 
         #Envia os argumentos empacotados
         response = self.doOperation('locadora','takeComic',op.SerializeToString())
+
+        if response == "Timeout":
+            return "Timeout"
+
         comic.ParseFromString(response)
 
         return comicFromMessage(comic)
 
 
-    def giveComic(self,name,date,auth,price,condition):
+    def giveComic(self,c:Comic):
         #Passar o objeto aqui e não os parâmetros
         #Empacota os argumentos
         comic = Message.Comic()
         op = Message.Comic()
-        op.name = name
-        op.date = date
-        op.auth = auth
-        op.price = price
-        op.condition = condition
-        op.status = 0
+        op.name = c.name
+        op.date = c.date
+        op.auth = c.auth
+        op.price = c.price
+        op.condition = c.condition
+        op.status = 1
 
         #Envia os argumentos empacotados
         response = self.doOperation('locadora','giveComic',op.SerializeToString())
+
+        if response == "Timeout":
+            return "Timeout"
+
 
         comic.ParseFromString(response)
 
@@ -96,6 +107,10 @@ class Proxy():
 
         #Envia os argumentos empacotados
         response = self.doOperation('locadora','getComics',op.SerializeToString())
+
+        if response == "Timeout":
+            return "Timeout"
+
         comics.ParseFromString(response)
 
         comicList = []
@@ -116,11 +131,26 @@ class Proxy():
     para a interface do usuário
     """
     def doOperation(self,objectRef,method,args):
-        data = self.packMessage(objectRef,method,args)
-        self.udpclient.sendRequest(data)
-        response = self.unpackMessage(self.udpclient.getResponse())
-        return response.arguments
+            data = self.packMessage(objectRef,method,args)
+            self.udpclient.sendRequest(data)
+            response = self.udpclient.getResponse()
 
+            #Se o udpClient não conseguiu receber a mensagem a tempo, envia de novo
+            if(response == "Timeout"):
+                print("Trying again...")
+
+                #Enviando a requisição de novo
+                self.udpclient.sendRequest(data)
+                response = self.udpclient.getResponse()
+                
+                #Se na segunda vez não der certo, retorna timeout para a função que chamou o doOperation
+                if(response == "Timeout"):
+                    return "Timeout"
+                
+            response = self.unpackMessage(response)
+            return response.arguments
+
+          
         #Fazer tratamento de falhas aqui
 
     #Empacota a mensagem com os dados passados (1), (2) e (3)

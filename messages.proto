@@ -3,7 +3,7 @@ syntax = "proto3";
 package proto;
 
 message Message {
-    int32 type = 1; //1 req 2 res 3 err
+    int32 type = 1; //1 req 2 res 3
     int32 id = 2; 
     string obfReference = 3;
     string methodId = 4;
