@@ -36,6 +36,8 @@ class UDPServer:
                     response = self.getRequest(data)
                     self.processed_requests[request_id] = response  # Armazena resposta
                     self.sendResponse(response, addr)
+                else:
+                    self.send_timeout(request_id, addr)
 
     def deserialize_request(self, data):
         """ Converte os dados recebidos em um objeto Protobuf """
@@ -50,6 +52,17 @@ class UDPServer:
         
     def getRequest(self,req):
         return self.despat.invoke(req)
+
     def sendResponse(self,res,addr):
         self.Socket.sendto(res,addr)
+
+    def send_timeout(self, request_id, addr):
+        timeout_response = messages_pb2.Response()
+        timeout_response.id = request_id
+        timeout_response.status = messages_pb2.TIMEOUT  # Usando o enum ResponseStatus
+        timeout_response.data = b""  # Timeout não precisa de dados
+
+        self.Socket.sendto(timeout_response.SerializeToString(), addr)
+        print(f"Timeout enviado para {addr}, ID: {request_id}")
+
 server = UDPServer('127.0.0.1',50007)

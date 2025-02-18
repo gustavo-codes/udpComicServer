@@ -2,6 +2,12 @@ syntax = "proto3";
 
 package proto;
 
+enum ResponseStatus {
+    SUCCESS = 0;
+    ERROR = 1;
+    TIMEOUT = 2;
+}
+
 message Message {
     int32 type = 1; //1 req 2 res 3
     int32 id = 2; 
@@ -26,6 +32,12 @@ message ComicId{
 message ComicList{
     repeated Comic comics = 1;
     int32 filter = 2;
+}
+
+message Response {
+    int32 id = 1;             // Same request ID for correlation
+    ResponseStatus status = 2;  // SUCCESS, ERROR, TIMEOUT
+    bytes data = 3;           // Serialized Comic, ComicList, or Error
 }
 
 message Error{

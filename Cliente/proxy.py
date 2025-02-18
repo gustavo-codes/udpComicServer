@@ -68,13 +68,22 @@ class Proxy():
         #Envia os argumentos empacotados
         response = self.doOperation('locadora','takeComic',op.SerializeToString())
 
-        if response == "Timeout":
+        if not response:
+            return "Erro: resposta vazia recebida do servidor"
+
+        # Desserializa a resposta
+        response_msg = Message.Response()
+        response_msg.ParseFromString(response)
+
+        # Verifica se é timeout, no caso o Message. é para acessar ao enum correspondente e não o uso de uma string.
+        if response_msg.status == Message.TIMEOUT:
             return "Timeout"
 
-        comic.ParseFromString(response)
+        # Converte a resposta para objeto Comic e retorna
+        comic = Message.Comic()
+        comic.ParseFromString(response_msg.data) # 
 
         return comicFromMessage(comic)
-
 
     def giveComic(self,c:Comic):
         #Passar o objeto aqui e não os parâmetros

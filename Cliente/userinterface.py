@@ -59,7 +59,7 @@ while operation != 0:
             comic:Comic = Comic(name, date, auth, price, condition)
             returnedComic = proxy.giveComic(comic)
 
-            if returnedComic == "Timeout": 
+            if returnedComic.tittle == "Timeout": 
                 print("Não foi possível falar com o servidor!")
             else:
                 returnedComic.display()
@@ -72,11 +72,12 @@ while operation != 0:
             id = int(input("Qual o id da comic? "))
             comic = proxy.takeComic(id)
 
-            if comic == "Timeout":
-                print("Não foi possível falar com o servidor!")
-            else:
-                comic.display()
+            comic = proxy.takeComic(id)
 
+            if comic == "Timeout":
+                print("Operação demorou muito. Tente novamente.")
+            else:
+                print("Quadrinho recebido:", comic)
         except ValueError:
             print("Erro: O ID deve ser um número inteiro válido.")
 
