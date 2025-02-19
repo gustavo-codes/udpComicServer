@@ -47,6 +47,7 @@ def comicFromMessage(msg):
 
 class Proxy():
     udpclient = UDPClient(2)
+    message_id = 0
 
     """
     Os métodos abaixo chamam remotamente os métodos com o mesmo nome no lado do servidor
@@ -146,7 +147,8 @@ class Proxy():
                 #Se na segunda vez não der certo, retorna timeout para a função que chamou o doOperation
                 if(response == "Timeout"):
                     return "Timeout"
-                
+            
+            print(response)
             response = self.unpackMessage(response)
             return response.arguments
 
@@ -157,7 +159,8 @@ class Proxy():
     def packMessage(self,objectRef,method,args):
         message = Message.Message()
         message.type = 1
-        message.id = 1
+        message.id = self.message_id
+        self.message_id+=1
         message.obfReference = objectRef
         message.methodId = method
         message.arguments = args
